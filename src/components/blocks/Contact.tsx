@@ -4,10 +4,11 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
-import { toast } from '../ui/use-toast';
+import { useToast } from '../../hooks/use-toast';
 
 export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
