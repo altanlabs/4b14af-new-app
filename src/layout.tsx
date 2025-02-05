@@ -21,15 +21,15 @@ export default function RootLayout({ showHeader = true, showFooter = true }: Lay
   return (
     <div className="min-h-screen bg-background">
       {showHeader && (
-        <header className="fixed w-full z-50 bg-zinc-900 shadow-lg">
-          <nav className="container mx-auto px-4">
+        <header className="fixed w-full z-50 bg-zinc-900/80 backdrop-blur-sm border-b border-zinc-800">
+          <nav className="container mx-auto px-6">
             <div className="flex justify-end items-center h-16">
               {/* Desktop Menu */}
               <div className="hidden md:flex items-center gap-12">
                 {menuItems.map((item) => (
                   <motion.button
                     key={item}
-                    className="text-white hover:text-primary transition-colors duration-200 text-sm tracking-wide"
+                    className="text-zinc-200 hover:text-white transition-colors duration-200 text-sm font-light tracking-wide"
                     onClick={() => scrollToSection(item)}
                     whileHover={{ y: -1 }}
                     whileTap={{ scale: 0.98 }}
@@ -43,7 +43,7 @@ export default function RootLayout({ showHeader = true, showFooter = true }: Lay
               <Button
                 variant="ghost"
                 size="sm"
-                className="md:hidden text-white"
+                className="md:hidden text-zinc-200"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? (
@@ -64,7 +64,7 @@ export default function RootLayout({ showHeader = true, showFooter = true }: Lay
             {/* Mobile Menu */}
             {isMenuOpen && (
               <motion.div
-                className="md:hidden absolute top-full left-0 w-full bg-zinc-900 border-t border-zinc-800"
+                className="md:hidden absolute top-full left-0 w-full bg-zinc-900/95 border-t border-zinc-800"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -73,7 +73,7 @@ export default function RootLayout({ showHeader = true, showFooter = true }: Lay
                   {menuItems.map((item) => (
                     <button
                       key={item}
-                      className="px-4 py-3 text-sm text-white hover:bg-zinc-800 transition-colors duration-200"
+                      className="px-4 py-3 text-sm text-zinc-200 hover:bg-zinc-800/50 hover:text-white transition-colors duration-200"
                       onClick={() => scrollToSection(item)}
                     >
                       {item}
