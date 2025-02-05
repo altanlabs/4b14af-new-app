@@ -1,259 +1,87 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
-import { AppSidebar } from "@/components/blocks/app-sidebar-collapsible-tree";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Bell, Settings, LogOut } from "lucide-react";
-import { Toggle } from "@radix-ui/react-toggle";
-import { SunIcon, MoonIcon } from "@radix-ui/react-icons";
-import { useTheme } from "@/theme/use-theme";
-import { useEffect, useRef } from "react";
+import { motion } from 'framer-motion';
+import { Button } from './components/ui/button';
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 
-interface NavItem {
-  label: string;
-  href: string;
-}
+export default function RootLayout() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-interface HeaderAction {
-  icon: React.ReactNode;
-  label: string;
-  onClick?: () => void;
-}
+  const menuItems = ['About', 'Portfolio', 'Contact'];
 
-interface HeaderProps {
-  title?: string;
-  navigation?: NavItem[];
-  actions?: HeaderAction[];
-  showNotifications?: boolean;
-  showUserMenu?: boolean;
-  showThemeToggle?: boolean;
-  userMenuItems?: HeaderAction[];
-  avatarSrc?: string;
-  avatarFallback?: string;
-}
-
-interface FooterProps {
-  text?: string;
-  links?: Array<{ label: string; href: string }>;
-}
-
-interface SidebarItem {
-  label: string;
-  href: string;
-  icon?: React.ReactNode;
-  items?: SidebarItem[];
-}
-
-interface SidebarProps {
-  items: SidebarItem[];
-  defaultOpen?: boolean;
-  companyName?: string;
-  logo?: React.ReactNode;
-  footerComponent?: React.ReactNode;
-}
-
-interface LayoutProps {
-  showSidebar?: boolean;
-  showHeader?: boolean;
-  showFooter?: boolean;
-  sidebarConfig?: SidebarProps;
-  header?: HeaderProps | false;
-  footer?: FooterProps | false;
-}
-
-const DefaultNavigation: NavItem[] = [
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-  { label: "Pricing", href: "/pricing" },
-];
-
-const DefaultHeader: HeaderProps = {
-  title: "Dashboard",
-  navigation: DefaultNavigation,
-  showNotifications: true,
-  showUserMenu: true,
-  showThemeToggle: true,
-  userMenuItems: [
-    { icon: <Settings className="mr-2 h-4 w-4" />, label: "Settings" },
-    { icon: <LogOut className="mr-2 h-4 w-4" />, label: "Logout" },
-  ],
-  avatarFallback: "JD",
-};
-
-const DefaultFooter: FooterProps = {
-  text: "© 2024 Your Company. All rights reserved.",
-  links: [
-    { label: "Privacy", href: "/privacy" },
-    { label: "Terms", href: "/terms" },
-  ],
-};
-
-export default function Layout({
-  showSidebar = true,
-  showHeader = true,
-  showFooter = true,
-  sidebarConfig,
-  header = DefaultHeader,
-  footer = DefaultFooter,
-}: LayoutProps) {
-  const location = useLocation();
-  const { theme, setTheme } = useTheme();
-  const initialThemeSet = useRef(false);
-
-  // Move theme parameter handling to useEffect
-  useEffect(() => {
-    if (initialThemeSet.current) return;
-    
-    const queryParams = new URLSearchParams(location.search);
-    const themeParam = queryParams.get('theme');
-    if (themeParam === 'light' || themeParam === 'dark') {
-      setTheme(themeParam);
-      // Remove the theme parameter from URL
-      queryParams.delete('theme');
-      const newSearch = queryParams.toString();
-      const newUrl = `${location.pathname}${newSearch ? `?${newSearch}` : ''}${location.hash}`;
-      window.history.replaceState({}, '', newUrl);
-      initialThemeSet.current = true;
-    }
-  }, [location.hash, location.pathname, location.search, setTheme]);
+  const scrollToSection = (id: string) => {
+    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: 'smooth' });
+    setIsMenuOpen(false);
+  };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-background text-foreground">
-      {/* Optional Sidebar */}
-      {showSidebar && (
-        <AppSidebar 
-          className="h-full border-r border-border" 
-          items={sidebarConfig?.items} 
-          defaultOpen={sidebarConfig?.defaultOpen}
-          companyName={sidebarConfig?.companyName}
-          logo={sidebarConfig?.logo}
-          footerComponent={sidebarConfig?.footerComponent}
-        />
-      )}
+    <div className="min-h-screen bg-black">
+      <header className="fixed w-full z-50 bg-black/80 backdrop-blur-sm">
+        <nav className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <motion.a
+              href="/"
+              className="text-2xl font-bold text-white"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              Portfolio
+            </motion.a>
 
-      {/* Main Content */}
-      <div className="flex flex-1 flex-col">
-        {/* Configurable Header */}
-        {header && showHeader && (
-          <header className="flex h-16 items-center justify-between border-b border-border px-6 bg-background">
-            <div className="flex items-center gap-8">
-              {header.title && (
-                <Link to="/">
-                  <h1 className="text-lg font-semibold text-foreground">{header.title}</h1>
-                </Link>
-              )}
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              className="md:hidden text-white"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? '×' : '☰'}
+            </Button>
 
-              {/* Navigation Links */}
-              {header.navigation && (
-                <nav className="flex items-center gap-6">
-                  {header.navigation.map((item, index) => (
-                    <Link
-                      key={index}
-                      to={item.href}
-                      className={`text-sm transition-colors hover:text-primary ${
-                        location.pathname === item.href
-                          ? "text-primary font-medium"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </nav>
-              )}
-            </div>
-
-            <div className="flex items-center gap-4">
-              {/* Theme Toggle */}
-              {header.showThemeToggle && (
-                <Toggle
-                  pressed={theme === "dark"}
-                  onPressedChange={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className={`px-2 py-2 rounded-md flex items-center gap-2 transition-colors
-                    ${
-                      theme === "dark"
-                        ? "bg-accent text-accent-foreground"
-                        : "bg-muted text-muted-foreground"
-                    }`}
-                >
-                  {theme === "dark" ? <SunIcon /> : <MoonIcon />}
-                </Toggle>
-              )}
-
-              {/* Custom Actions */}
-              {header.actions?.map((action, index) => (
+            {/* Desktop Menu */}
+            <div className="hidden md:flex gap-8">
+              {menuItems.map((item) => (
                 <Button
-                  key={index}
+                  key={item}
                   variant="ghost"
-                  size="icon"
-                  onClick={action.onClick}
+                  className="text-white hover:text-gray-300"
+                  onClick={() => scrollToSection(item)}
                 >
-                  {action.icon}
+                  {item}
                 </Button>
               ))}
-
-              {/* Notifications */}
-              {header.showNotifications && (
-                <Button variant="ghost" size="icon">
-                  <Bell className="h-5 w-5" />
-                </Button>
-              )}
-
-              {/* User Menu */}
-              {header.showUserMenu && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 rounded-full">
-                      <Avatar>
-                        <AvatarImage src={header.avatarSrc} alt="User" />
-                        <AvatarFallback>{header.avatarFallback}</AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    {header.userMenuItems?.map((item, index) => (
-                      <DropdownMenuItem key={index} onClick={item.onClick}>
-                        {item.icon}
-                        {item.label}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
             </div>
-          </header>
-        )}
+          </div>
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-auto bg-background">
-          <Outlet />
-        </main>
-
-        {/* Footer */}
-        {footer && showFooter && (
-          <footer className="border-t border-border px-6 py-4 bg-background">
-            <div className="flex items-center justify-center gap-4">
-              <span className="text-sm text-muted-foreground">
-                {footer.text}
-              </span>
-              {footer.links?.map((link, index) => (
-                <a
-                  key={index}
-                  href={link.href}
-                  className="text-sm text-muted-foreground hover:text-foreground"
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <motion.div
+              className="md:hidden absolute top-full left-0 w-full bg-black/95 py-4"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              {menuItems.map((item) => (
+                <Button
+                  key={item}
+                  variant="ghost"
+                  className="w-full text-white hover:text-gray-300 justify-start px-4"
+                  onClick={() => scrollToSection(item)}
                 >
-                  {link.label}
-                </a>
+                  {item}
+                </Button>
               ))}
-            </div>
-          </footer>
-        )}
-      </div>
+            </motion.div>
+          )}
+        </nav>
+      </header>
+
+      <main className="pt-16">
+        <Outlet />
+      </main>
+
+      <footer className="bg-black text-white py-8">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-gray-400">© {new Date().getFullYear()} Portfolio. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }
