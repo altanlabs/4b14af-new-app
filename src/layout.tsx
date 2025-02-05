@@ -19,17 +19,17 @@ export default function RootLayout({ showHeader = true, showFooter = true }: Lay
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       {showHeader && (
-        <header className="fixed w-full z-50 bg-black/60 backdrop-blur-md border-b border-gray-800/50">
+        <header className="fixed w-full z-50 bg-zinc-900 shadow-lg">
           <nav className="container mx-auto px-4">
-            <div className="flex justify-between items-center h-14">
+            <div className="flex justify-end items-center h-16">
               {/* Desktop Menu */}
-              <div className="hidden md:flex items-center space-x-8 text-sm">
+              <div className="hidden md:flex items-center gap-12">
                 {menuItems.map((item) => (
                   <motion.button
                     key={item}
-                    className="text-gray-300 hover:text-white transition-colors duration-200 font-light"
+                    className="text-white hover:text-primary transition-colors duration-200 text-sm tracking-wide"
                     onClick={() => scrollToSection(item)}
                     whileHover={{ y: -1 }}
                     whileTap={{ scale: 0.98 }}
@@ -43,7 +43,7 @@ export default function RootLayout({ showHeader = true, showFooter = true }: Lay
               <Button
                 variant="ghost"
                 size="sm"
-                className="md:hidden text-white p-1"
+                className="md:hidden text-white"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? (
@@ -64,7 +64,7 @@ export default function RootLayout({ showHeader = true, showFooter = true }: Lay
             {/* Mobile Menu */}
             {isMenuOpen && (
               <motion.div
-                className="md:hidden absolute top-full left-0 w-full bg-black/95 border-b border-gray-800/50"
+                className="md:hidden absolute top-full left-0 w-full bg-zinc-900 border-t border-zinc-800"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -73,7 +73,7 @@ export default function RootLayout({ showHeader = true, showFooter = true }: Lay
                   {menuItems.map((item) => (
                     <button
                       key={item}
-                      className="px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors duration-200"
+                      className="px-4 py-3 text-sm text-white hover:bg-zinc-800 transition-colors duration-200"
                       onClick={() => scrollToSection(item)}
                     >
                       {item}
@@ -86,14 +86,14 @@ export default function RootLayout({ showHeader = true, showFooter = true }: Lay
         </header>
       )}
 
-      <main className={showHeader ? "pt-14" : ""}>
+      <main className={showHeader ? "pt-16" : ""}>
         <Outlet />
       </main>
 
       {showFooter && (
-        <footer className="bg-black text-white py-8">
+        <footer className="bg-zinc-900 text-white py-8">
           <div className="container mx-auto px-4 text-center">
-            <p className="text-gray-400 text-sm">© {new Date().getFullYear()} Portfolio. All rights reserved.</p>
+            <p className="text-zinc-400 text-sm">© {new Date().getFullYear()} Portfolio. All rights reserved.</p>
           </div>
         </footer>
       )}
