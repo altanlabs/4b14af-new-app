@@ -1,25 +1,34 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 
 const projects = [
   {
     title: "Digital Dreamscape",
-    description: "Interactive Art Installation",
-    image: "https://images.unsplash.com/photo-1633627243409-45f9e2300b70?q=80&w=2072&auto=format&fit=crop",
-    category: "Digital Art"
+    description: "An immersive digital art installation that combines real-time particle systems with user interaction. Created using WebGL and Three.js.",
+    image: "https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=2187&auto=format&fit=crop",
+    category: "Digital Art",
+    tech: ["WebGL", "Three.js", "React"],
+    link: "#",
+    details: "This project explores the intersection of art and technology, creating an interactive environment where visitors can influence and shape the digital landscape through movement and gesture."
   },
   {
     title: "Neon Nights",
-    description: "3D Visual Experience",
+    description: "A 3D visual experience showcasing cyberpunk-inspired cityscapes with dynamic lighting effects.",
     image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop",
-    category: "3D Design"
+    category: "3D Design",
+    tech: ["Blender", "Unity", "C#"],
+    link: "#",
+    details: "Neon Nights pushes the boundaries of real-time 3D rendering, featuring procedurally generated cities with dynamic weather systems and time-of-day cycles."
   },
   {
     title: "Cyber Genesis",
-    description: "Web Development & Animation",
+    description: "An award-winning web development project featuring cutting-edge animations and interactions.",
     image: "https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=2069&auto=format&fit=crop",
-    category: "Development"
+    category: "Development",
+    tech: ["React", "GSAP", "WebGL"],
+    link: "#",
+    details: "Cyber Genesis redefines web interactions through innovative use of 3D elements and smooth animations, creating an unforgettable user experience."
   },
 ];
 
@@ -69,15 +78,52 @@ export function Portfolio() {
                     <img 
                       src={project.image} 
                       alt={project.title}
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-300">
-                        <span className="text-sm text-gray-300 mb-2 block">{project.category}</span>
+                    <motion.div 
+                      className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"
+                      initial={{ opacity: 0 }}
+                      whileHover={{ opacity: 1 }}
+                    >
+                      <motion.div 
+                        className="absolute bottom-0 left-0 right-0 p-6"
+                        initial={{ y: 60, opacity: 0 }}
+                        whileHover={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <span className="inline-block px-3 py-1 bg-white/10 rounded-full text-sm text-gray-300 mb-3">
+                          {project.category}
+                        </span>
                         <h3 className="text-2xl font-bold text-white mb-2">{project.title}</h3>
-                        <p className="text-gray-300">{project.description}</p>
-                      </div>
-                    </div>
+                        <p className="text-gray-300 mb-4">{project.description}</p>
+                        
+                        <div className="space-y-3">
+                          <div className="flex flex-wrap gap-2">
+                            {project.tech.map((tech, i) => (
+                              <span 
+                                key={i}
+                                className="text-xs px-2 py-1 bg-white/20 rounded-full text-gray-300"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                          
+                          <p className="text-sm text-gray-400 mt-2">
+                            {project.details}
+                          </p>
+                          
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="mt-4 border-white/50 text-white hover:bg-white hover:text-black transition-colors"
+                            onClick={() => window.open(project.link, '_blank')}
+                          >
+                            View Project
+                          </Button>
+                        </div>
+                      </motion.div>
+                    </motion.div>
                   </div>
                 </CardContent>
               </Card>
