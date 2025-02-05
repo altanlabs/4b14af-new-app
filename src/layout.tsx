@@ -11,7 +11,7 @@ interface LayoutProps {
 
 export default function RootLayout({ showHeader = true, showFooter = true }: LayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuItems = ['About', 'Portfolio', 'Contact'];
+  const menuItems = ['Portfolio', 'About', 'Featured', 'Contact'];
 
   const scrollToSection = (id: string) => {
     document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: 'smooth' });
@@ -21,73 +21,79 @@ export default function RootLayout({ showHeader = true, showFooter = true }: Lay
   return (
     <div className="min-h-screen bg-black">
       {showHeader && (
-        <header className="fixed w-full z-50 bg-black/80 backdrop-blur-sm">
-          <nav className="container mx-auto px-4 py-4">
-            <div className="flex justify-between items-center">
-              <motion.a
-                href="/"
-                className="text-2xl font-bold text-white"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                Portfolio
-              </motion.a>
+        <header className="fixed w-full z-50 bg-black/60 backdrop-blur-md border-b border-gray-800/50">
+          <nav className="container mx-auto px-4">
+            <div className="flex justify-between items-center h-14">
+              {/* Desktop Menu */}
+              <div className="hidden md:flex items-center space-x-8 text-sm">
+                {menuItems.map((item) => (
+                  <motion.button
+                    key={item}
+                    className="text-gray-300 hover:text-white transition-colors duration-200 font-light"
+                    onClick={() => scrollToSection(item)}
+                    whileHover={{ y: -1 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {item}
+                  </motion.button>
+                ))}
+              </div>
 
               {/* Mobile Menu Button */}
               <Button
                 variant="ghost"
-                className="md:hidden text-white"
+                size="sm"
+                className="md:hidden text-white p-1"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                {isMenuOpen ? '×' : '☰'}
+                {isMenuOpen ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                  </svg>
+                )}
               </Button>
-
-              {/* Desktop Menu */}
-              <div className="hidden md:flex gap-8">
-                {menuItems.map((item) => (
-                  <Button
-                    key={item}
-                    variant="ghost"
-                    className="text-white hover:text-gray-300"
-                    onClick={() => scrollToSection(item)}
-                  >
-                    {item}
-                  </Button>
-                ))}
-              </div>
             </div>
 
             {/* Mobile Menu */}
             {isMenuOpen && (
               <motion.div
-                className="md:hidden absolute top-full left-0 w-full bg-black/95 py-4"
-                initial={{ opacity: 0, y: -20 }}
+                className="md:hidden absolute top-full left-0 w-full bg-black/95 border-b border-gray-800/50"
+                initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
               >
-                {menuItems.map((item) => (
-                  <Button
-                    key={item}
-                    variant="ghost"
-                    className="w-full text-white hover:text-gray-300 justify-start px-4"
-                    onClick={() => scrollToSection(item)}
-                  >
-                    {item}
-                  </Button>
-                ))}
+                <div className="flex flex-col py-2">
+                  {menuItems.map((item) => (
+                    <button
+                      key={item}
+                      className="px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors duration-200"
+                      onClick={() => scrollToSection(item)}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
               </motion.div>
             )}
           </nav>
         </header>
       )}
 
-      <main className={showHeader ? "pt-16" : ""}>
+      <main className={showHeader ? "pt-14" : ""}>
         <Outlet />
       </main>
 
       {showFooter && (
         <footer className="bg-black text-white py-8">
           <div className="container mx-auto px-4 text-center">
-            <p className="text-gray-400">© {new Date().getFullYear()} Portfolio. All rights reserved.</p>
+            <p className="text-gray-400 text-sm">© {new Date().getFullYear()} Portfolio. All rights reserved.</p>
           </div>
         </footer>
       )}
